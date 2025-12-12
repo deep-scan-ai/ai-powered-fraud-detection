@@ -17,19 +17,17 @@ jobs:
         with:
           python-version: 3.11
 
-      - name: Install backend deps
+      - name: Install backend deps with Poetry
         run: |
           cd backend
-          python -m venv .venv
-          source .venv/bin/activate
           pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install poetry
+          poetry install --no-interaction --no-ansi
 
       - name: Run backend tests
         run: |
           cd backend
-          source .venv/bin/activate
-          pytest -q
+          poetry run pytest -q
 
   frontend-tests:
     runs-on: ubuntu-latest

@@ -12,6 +12,13 @@ permissions:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+
+    # map secrets to job-level env variables (avoids parser error when using in if)
+    env:
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+      SSH_KEY: ${{ secrets.SSH_KEY }}
+
     steps:
       - uses: actions/checkout@v4
 
@@ -28,7 +35,6 @@ jobs:
       - name: Build and push backend image
         run: |
           docker build -t ghcr.io/${{ github.repository_owner }}/fraud-backend:latest ./backend
-          echo "Pushing backend image..."
           docker push ghcr.io/${{ github.repository_owner }}/fraud-backend:latest
 
       - name: Build and push frontend image
@@ -36,18 +42,18 @@ jobs:
           docker build -t ghcr.io/${{ github.repository_owner }}/fraud-frontend:latest ./frontend
           docker push ghcr.io/${{ github.repository_owner }}/fraud-frontend:latest
 
-      # Optional: deploy to server (example using SSH)
-      - name: Deploy via SSH (example)
-        if: ${{ secrets.SSH_HOST != '' }}
-        uses: appleboy/ssh-action@v0.1.8
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            docker pull ghcr.io/${{ github.repository_owner }}/fraud-backend:latest
-            docker pull ghcr.io/${{ github.repository_owner }}/fraud-frontend:latest
-            # example docker-compose restart commands on server
-            cd /home/ubuntu/fraud-deploy
-            docker-compose pull
-            docker-compose up -d
+      # Optional: deploy to server (example using SSH) — only runs if SSH_HOST is set
+#      - name: Deploy via SSH (example)
+#        if: ${{ env.SSH_HOST != '' }}
+#        uses: appleboy/ssh-action@v0.1.8
+#        with:
+#          host: ${{ env.SSH_HOST }}
+#          username: ${{ env.SSH_USER }}
+#          key: ${{ env.SSH_KEY }}
+#          script: |
+#            docker pull ghcr.io/${{ github.repository_owner }}/fraud-backend:latest
+#            docker pull ghcr.io/${{ github.repository_owner }}/fraud-frontend:latest
+#            cd /home/ubuntu/fraud-deploy
+#            docker-compose pull
+#            docker-compose up -d
+#
