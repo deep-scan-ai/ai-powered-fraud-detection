@@ -21,7 +21,7 @@ function Dashboard() {
   });
 
   useEffect(() => {
-    fetchStats();
+    // fetchStats();
     fetchTransactions(); 
   }, []);
 
@@ -69,18 +69,18 @@ function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen p-8 bg-gray-50">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold text-gray-900 mb-8">
+        <h1 className="mb-8 text-4xl font-bold text-gray-900">
           AI Fraud Detection Dashboard
         </h1>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-lg shadow">
+        <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-3">
+          <div className="p-6 bg-white rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm">Total Transactions</p>
+                <p className="text-sm text-gray-500">Total Transactions</p>
                 <p className="text-3xl font-bold text-gray-900">
                   {stats.total_transactions}
                 </p>
@@ -89,10 +89,10 @@ function Dashboard() {
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow">
+          <div className="p-6 bg-white rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm">Flagged as Fraud</p>
+                <p className="text-sm text-gray-500">Flagged as Fraud</p>
                 <p className="text-3xl font-bold text-red-600">
                   {stats.flagged_count}
                 </p>
@@ -101,10 +101,10 @@ function Dashboard() {
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow">
+          <div className="p-6 bg-white rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm">Model Accuracy</p>
+                <p className="text-sm text-gray-500">Model Accuracy</p>
                 <p className="text-3xl font-bold text-green-600">
                   {stats.accuracy}%
                 </p>
@@ -115,13 +115,13 @@ function Dashboard() {
         </div>
 
         {/* Analysis Form */}
-        <div className="bg-white p-8 rounded-lg shadow mb-8">
-          <h2 className="text-2xl font-bold mb-6">Analyze Transaction</h2>
+        <div className="p-8 mb-8 bg-white rounded-lg shadow">
+          <h2 className="mb-6 text-2xl font-bold">Analyze Transaction</h2>
           
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block mb-2 text-sm font-medium text-gray-700">
                   Transaction ID
                 </label>
                 <input
@@ -136,7 +136,7 @@ function Dashboard() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block mb-2 text-sm font-medium text-gray-700">
                   User ID
                 </label>
                 <input
@@ -151,7 +151,7 @@ function Dashboard() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block mb-2 text-sm font-medium text-gray-700">
                   Amount (Rs.)
                 </label>
                 <input
@@ -166,7 +166,7 @@ function Dashboard() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block mb-2 text-sm font-medium text-gray-700">
                   Location
                 </label>
                 <input
@@ -180,7 +180,7 @@ function Dashboard() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block mb-2 text-sm font-medium text-gray-700">
                   Device
                 </label>
                 <select
@@ -199,7 +199,7 @@ function Dashboard() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 font-semibold"
+              className="w-full py-3 font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
             >
               {loading ? 'Analyzing...' : 'Analyze Transaction'}
             </button>
@@ -254,9 +254,9 @@ function Dashboard() {
                   </div>
 
                   {result.reason && (
-                    <div className="mt-4 pt-4 border-t border-gray-200">
+                    <div className="pt-4 mt-4 border-t border-gray-200">
                       <p className="text-sm text-gray-600">Reason</p>
-                      <p className="text-gray-900 font-medium">{result.reason}</p>
+                      <p className="font-medium text-gray-900">{result.reason}</p>
                     </div>
                   )}
                 </div>
@@ -267,9 +267,9 @@ function Dashboard() {
 
 
         {/* Transactions Table */}
-        <div className="bg-white p-8 rounded-lg shadow mb-8">
-          <h2 className="text-2xl font-bold mb-4">All Transactions</h2>
-          <table className="min-w-full table-auto border border-gray-200">
+        <div className="p-8 mb-8 bg-white rounded-lg shadow">
+          <h2 className="mb-4 text-2xl font-bold">All Transactions</h2>
+          <table className="min-w-full border border-gray-200 table-auto">
             <thead>
               <tr className="bg-gray-100">
                 <th className="px-4 py-2 border">Transaction ID</th>
