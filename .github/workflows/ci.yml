@@ -15,7 +15,7 @@ jobs:
       - name: Set up Python 3.11
         uses: actions/setup-python@v4
         with:
-          python-version: 3.11
+          python-version: 3.12
 
       - name: Install backend deps with Poetry
         run: |
@@ -27,7 +27,7 @@ jobs:
       - name: Run backend tests
         run: |
           cd backend
-          poetry run uvicorn main:app --host 127.0.0.1 --port 8000 &
+          poetry run uvicorn app.main:app --host 127.0.0.1 --port 8000 &
           sleep 5
           poetry run pytest -q
 
