@@ -60,10 +60,13 @@ docker-compose.override.yml
 
 # ML models (large files)
 *.pkl
+*.joblib
 *.h5
 *.pt
 *.pth
 ml/models/*.joblib
+ml/models/*.pkl
+
 
 # Database
 *.db
