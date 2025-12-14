@@ -28,10 +28,17 @@ app.add_middleware(
 # ==================== Startup Event ====================
 @app.on_event("startup")
 async def startup():
-    """Create database tables on startup"""
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    print("✅ Database tables created successfully")
+    if os.getenv("TESTING") == "true":
+        print("⏭️  Skipping database initialization (testing mode)")
+        return
+    
+    try:
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+        print("✅ Database tables created successfully")
+    except Exception as e:
+        print(f"⚠️  Database connection failed: {e}")
+        print("⏭️  Continuing without database")
 
 # ==================== Health Check ====================
 @app.get("/")
