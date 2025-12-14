@@ -14,6 +14,7 @@ python = ">=3.12"
 fastapi = "^0.124.2"
 uvicorn = { extras = ["standard"], version = "^0.38.0" }
 pydantic = "^2.12.5"
+pydantic-settings = "^2.0.0" 
 
 sqlalchemy = "^2.0.45"
 asyncpg = "^0.31.0"
