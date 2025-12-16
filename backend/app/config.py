@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     FRAUD_THRESHOLD: float = 0.8
     
     # CORS
-    ALLOWED_ORIGINS: list[str] = ["http://localhost:3000"]
+    ALLOWED_ORIGINS: list[str] = ["*"]
     
     class Config:
         env_file = ".env"

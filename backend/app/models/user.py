@@ -5,7 +5,7 @@ from datetime import datetime
 
 Base = declarative_base()
 
-# ==================== SQLAlchemy Model (Database) ====================
+#  SQLAlchemy Model (Database) 
 class UserDB(Base):
     """Database model - represents users table in PostgreSQL"""
     __tablename__ = "users"
@@ -18,7 +18,7 @@ class UserDB(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-# ==================== Pydantic Models (API) ====================
+#  Pydantic Models (API) 
 class UserCreate(BaseModel):
     """Request model - create user"""
     email: str

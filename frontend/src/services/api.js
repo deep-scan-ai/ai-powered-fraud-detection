@@ -10,6 +10,7 @@ const api = axios.create({
   timeout: 10000, // 10 seconds timeout
 });
 
+
 export const analyzeTransaction = async (transactionData) => {
   try {
     const response = await api.post('/api/analyze', transactionData);
@@ -19,6 +20,7 @@ export const analyzeTransaction = async (transactionData) => {
     throw error;
   }
 };
+
 
 export const getTransactions = async () => {
   try {
@@ -30,6 +32,7 @@ export const getTransactions = async () => {
   }
 };
 
+
 export const getStats = async () => {
   try {
     const response = await api.get('/api/stats');
@@ -39,5 +42,6 @@ export const getStats = async () => {
     throw error;
   }
 };
+
 
 export default api;
