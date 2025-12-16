@@ -2,12 +2,11 @@ from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-import pandas as pd
 import os 
 
 from app.config import settings
 from app.database import engine, get_db
-from app.models import TransactionDB, Transaction, TransactionResponse, transactions_db
+from app.models import TransactionDB, TransactionResponse, transactions_db
 from app.models.transaction import Base
 
 # Create FastAPI app
@@ -104,47 +103,19 @@ async def get_transactions(db: AsyncSession = Depends(get_db)):
     return transactions
 
 
-#  Create Transaction Endpoint
-@app.post("/api/transactions", response_model=TransactionResponse)
-async def create_transaction(tx: Transaction, db: AsyncSession = Depends(get_db)):
-    """Save new transaction to database"""
+#  Analyze Transaction Endpoint
+@app.post("/api/analyze")
+async def analyze_transaction(data: dict):
+    """Analyze a transaction for fraud"""
+    amount = data.get("amount", 0)
+    risk_score = 0.95 if amount > 50000 else 0.05
+    flagged = risk_score > settings.FRAUD_THRESHOLD
     
-    # Calculate risk score
-    df = pd.DataFrame([tx.dict()])
-    risk_score = 0.95 if df['amount'].iloc[0] > 50000 else 0.05
-    is_fraud = risk_score > settings.FRAUD_THRESHOLD
-    
-    # Save to database
-    db_transaction = TransactionDB(
-        transaction_id=tx.transaction_id,
-        user_id=tx.user_id,
-        amount=tx.amount,
-        location=tx.location,
-        device=tx.device,
-        is_fraud=is_fraud,
-        risk_score=risk_score,
-    )
-    
-    db.add(db_transaction)
-    await db.commit()
-    await db.refresh(db_transaction)
-    
-    return db_transaction
-
-
-#  Get Transaction by ID Endpoint
-@app.get("/api/transactions/{transaction_id}", response_model=TransactionResponse)
-async def get_transaction(transaction_id: str, db: AsyncSession = Depends(get_db)):
-    """Get specific transaction by ID"""
-    result = await db.execute(
-        select(TransactionDB).where(TransactionDB.transaction_id == transaction_id)
-    )
-    transaction = result.scalar_one_or_none()
-    
-    if not transaction:
-        return {"error": "Transaction not found"}
-    
-    return transaction
+    return {
+        "transaction_id": data.get("transaction_id"),
+        "risk_score": risk_score,
+        "flagged": flagged
+    }
 
 def start():
     """Start the application"""
