@@ -3,27 +3,17 @@ import { AlertCircle, TrendingUp, CheckCircle, XCircle } from 'lucide-react';
 import { analyzeTransaction, getStats, getTransactions  } from '../services/api';
 
 function Dashboard() {
-  const [stats, setStats] = useState({
-    total_transactions: 0,
-    flagged_count: 0,
-    accuracy: 0
-  });
+  const [stats, setStats] = useState({total_transactions: 0, flagged_count: 0, accuracy: 0});
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
-
-  const [formData, setFormData] = useState({
-    transaction_id: '',
-    user_id: '',
-    amount: '',
-    location: 'Colombo',
-    device: 'mobile'
-  });
+  const [formData, setFormData] = useState({transaction_id: '', user_id: '', amount: '', location: 'Colombo', device: 'mobile'});
 
   useEffect(() => {
     // fetchStats();
     fetchTransactions(); 
   }, []);
+
 
   const fetchStats = async () => {
     try {
@@ -34,14 +24,17 @@ function Dashboard() {
     }
   };
 
+
   const fetchTransactions = async () => {
     try {
       const data = await getTransactions();
-      setTransactions(data.transactions);
+      setTransactions(data || []);
     } catch (error) {
       console.error('Failed to fetch transactions', error);
+      setTransactions([]);
     }
   };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -61,6 +54,7 @@ function Dashboard() {
     }
   };
 
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -68,6 +62,7 @@ function Dashboard() {
     });
   };
 
+  
   return (
     <div className="min-h-screen p-8 bg-gray-50">
       <div className="max-w-6xl mx-auto">
@@ -113,6 +108,7 @@ function Dashboard() {
             </div>
           </div>
         </div>
+
 
         {/* Analysis Form */}
         <div className="p-8 mb-8 bg-white rounded-lg shadow">
@@ -205,6 +201,7 @@ function Dashboard() {
             </button>
           </form>
 
+
           {/* Result Display */}
           {result && (
             <div className={`mt-6 p-6 rounded-lg ${
@@ -281,7 +278,7 @@ function Dashboard() {
               </tr>
             </thead>
             <tbody>
-              {transactions.map(tx => (
+              {transactions && transactions.map(tx => (
                 <tr key={tx.transaction_id}>
                   <td className="px-4 py-2 border">{tx.transaction_id}</td>
                   <td className="px-4 py-2 border">{tx.user_id}</td>

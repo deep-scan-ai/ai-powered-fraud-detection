@@ -2,12 +2,11 @@ from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-import pandas as pd
 import os 
 
 from app.config import settings
 from app.database import engine, get_db
-from app.models import TransactionDB, Transaction, TransactionResponse, transactions_db
+from app.models import TransactionDB, TransactionResponse, transactions_db
 from app.models.transaction import Base
 
 # Create FastAPI app
@@ -17,7 +16,8 @@ app = FastAPI(
     debug=settings.DEBUG
 )
 
-# ==================== CORS Configuration ====================
+
+# CORS Configuration 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.ALLOWED_ORIGINS,
@@ -26,7 +26,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ==================== Startup Event ====================
+
+# Startup Event - Initialize Database 
 @app.on_event("startup")
 async def startup():
     if os.getenv("TESTING") == "true":
@@ -35,13 +36,37 @@ async def startup():
     
     try:
         async with engine.begin() as conn:
+            # Drop table if exists to update schema
+            await conn.run_sync(Base.metadata.drop_all)
             await conn.run_sync(Base.metadata.create_all)
         print("✅ Database tables created successfully")
+        
+        # Insert dummy data
+        async with AsyncSession(engine) as session:
+            # Check if data already exists
+            result = await session.execute(select(TransactionDB))
+            existing = result.scalars().all()
+            if not existing:
+                for tx_data in transactions_db:
+                    tx = TransactionDB(
+                        transaction_id=tx_data["transaction_id"],
+                        user_id=tx_data["user_id"],
+                        amount=tx_data["amount"],
+                        location=tx_data["location"],
+                        device=tx_data["device"],
+                        timestamp=tx_data["timestamp"],
+                        is_fraud=tx_data["is_fraud"],
+                        risk_score=0.0 if not tx_data["is_fraud"] else 0.95
+                    )
+                    session.add(tx)
+                await session.commit()
+                print("✅ Dummy data inserted successfully")
     except Exception as e:
         print(f"⚠️  Database connection failed: {e}")
         print("⏭️  Continuing without database")
 
-# ==================== Health Check ====================
+
+#  Health Check Endpoint
 @app.get("/")
 def home():
     return {
@@ -50,22 +75,26 @@ def home():
         "docs": "/docs"
     }
 
-# ==================== Analyze Transaction (Testing) ====================
-@app.post("/api/analyze")
-async def analyze(tx: Transaction):
-    """Analyze transaction without saving to database"""
-    df = pd.DataFrame([tx.dict()])
+
+#  Get Stats Endpoint
+@app.get("/api/stats")
+async def get_stats(db: AsyncSession = Depends(get_db)):
+    """Get statistics about transactions"""
+    result = await db.execute(select(TransactionDB))
+    all_transactions = result.scalars().all()
     
-    # Dummy risk score calculation
-    risk_score = 0.95 if df['amount'].iloc[0] > 50000 else 0.05
+    total_transactions = len(all_transactions)
+    flagged_count = sum(1 for tx in all_transactions if tx.is_fraud)
+    accuracy = 0.95  # Dummy accuracy
     
     return {
-        "transaction_id": tx.transaction_id,
-        "risk_score": risk_score,
-        "flagged": risk_score > 0.8
+        "total_transactions": total_transactions,
+        "flagged_count": flagged_count,
+        "accuracy": accuracy
     }
 
-# ==================== Get All Transactions ====================
+
+#  Get All Transactions Endpoint
 @app.get("/api/transactions", response_model=list[TransactionResponse])
 async def get_transactions(db: AsyncSession = Depends(get_db)):
     """Get all transactions from database"""
@@ -73,45 +102,20 @@ async def get_transactions(db: AsyncSession = Depends(get_db)):
     transactions = result.scalars().all()
     return transactions
 
-# ==================== Create Transaction ====================
-@app.post("/api/transactions", response_model=TransactionResponse)
-async def create_transaction(tx: Transaction, db: AsyncSession = Depends(get_db)):
-    """Save new transaction to database"""
-    
-    # Calculate risk score
-    df = pd.DataFrame([tx.dict()])
-    risk_score = 0.95 if df['amount'].iloc[0] > 50000 else 0.05
-    is_fraud = risk_score > settings.FRAUD_THRESHOLD
-    
-    # Save to database
-    db_transaction = TransactionDB(
-        transaction_id=tx.transaction_id,
-        amount=tx.amount,
-        merchant=tx.merchant,
-        card_type=tx.card_type,
-        is_fraud=is_fraud,
-        risk_score=risk_score,
-    )
-    
-    db.add(db_transaction)
-    await db.commit()
-    await db.refresh(db_transaction)
-    
-    return db_transaction
 
-# ==================== Get Transaction by ID ====================
-@app.get("/api/transactions/{transaction_id}", response_model=TransactionResponse)
-async def get_transaction(transaction_id: str, db: AsyncSession = Depends(get_db)):
-    """Get specific transaction by ID"""
-    result = await db.execute(
-        select(TransactionDB).where(TransactionDB.transaction_id == transaction_id)
-    )
-    transaction = result.scalar_one_or_none()
+#  Analyze Transaction Endpoint
+@app.post("/api/analyze")
+async def analyze_transaction(data: dict):
+    """Analyze a transaction for fraud"""
+    amount = data.get("amount", 0)
+    risk_score = 0.95 if amount > 50000 else 0.05
+    flagged = risk_score > settings.FRAUD_THRESHOLD
     
-    if not transaction:
-        return {"error": "Transaction not found"}
-    
-    return transaction
+    return {
+        "transaction_id": data.get("transaction_id"),
+        "risk_score": risk_score,
+        "flagged": flagged
+    }
 
 def start():
     """Start the application"""

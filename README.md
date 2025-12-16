@@ -478,7 +478,7 @@ Post daily updates on **Group** (or team communication tool):
 
 ### When
 
-- **Post by:** 10 AM (your timezone)
+- **Post by:** 10 AM 
 - **Read by:** Team lead reviews during day
 - **Response by:** 5 PM same day
 
