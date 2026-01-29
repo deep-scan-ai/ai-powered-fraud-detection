@@ -25,6 +25,15 @@ jobs:
       working-directory: ./backend
       run: poetry install
     
+    - name: Download Kaggle dataset
+      env:
+        KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+        KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+      run: |
+        pip install kaggle
+        mkdir -p ml/datasets
+        kaggle datasets download -d mlg-ulb/creditcardfraud -p ml/datasets --unzip
+    
     - name: Train ML model
       working-directory: ./backend
       run: poetry run python app/ml/train_model.py
