@@ -25,6 +25,10 @@ jobs:
       working-directory: ./backend
       run: poetry install
     
+    - name: Train ML model
+      working-directory: ./backend
+      run: poetry run python app/ml/train_model.py
+    
     - name: Run tests
       working-directory: ./backend
       run: poetry run pytest tests/ -v
