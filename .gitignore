@@ -80,3 +80,12 @@ ml/models/*.pkl
 htmlcov/
 .coverage
 .pytest_cache/
+
+
+# ML datasets (too large for git)
+ml/datasets/*.csv
+ml/datasets/*.zip
+
+# ML models (regenerated files)
+*.pkl
+backend/app/ml/*.pkl
