@@ -50,3 +50,30 @@ jobs:
           cd frontend
           npm ci
           npm test -- --watchAll=false --silent
+  code-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
+
+      - name: Install Poetry
+        run: |
+          pip install poetry
+          cd backend
+          poetry install --no-interaction --no-ansi
+
+      - name: Run Black (formatting check)
+        run: |
+          cd backend
+          poetry run black --check app/ || echo "Formatting issues found"
+        continue-on-error: true
+
+      - name: Run isort (import sorting)
+        run: |
+          cd backend
+          poetry run isort --check-only app/ || echo "Import sorting issues found"
+        continue-on-error: true
