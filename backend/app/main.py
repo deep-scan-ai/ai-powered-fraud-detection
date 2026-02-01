@@ -1,13 +1,17 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-import os 
+import os
 
 from app.config import settings
 from app.database import engine, get_db
 from app.models import TransactionDB, TransactionResponse, transactions_db
 from app.models.transaction import Base
+
+from app.api.fraud_alert import router as fraud_alert_router
+from app.api.transactions import router as transactions_router
+
 
 # Create FastAPI app
 app = FastAPI(
@@ -16,8 +20,20 @@ app = FastAPI(
     debug=settings.DEBUG
 )
 
+app.include_router(
+    fraud_alert_router,
+    prefix="/api",
+    tags=["Fraud Alerts"]
+)
 
-# CORS Configuration 
+app.include_router(
+    transactions_router,
+    prefix="/api",
+    tags=["Transactions"]
+)
+
+
+# CORS Configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.ALLOWED_ORIGINS,
@@ -27,23 +43,21 @@ app.add_middleware(
 )
 
 
-# Startup Event - Initialize Database 
+# Startup Event - Initialize Database
 @app.on_event("startup")
 async def startup():
     if os.getenv("TESTING") == "true":
         print("⏭️  Skipping database initialization (testing mode)")
         return
-    
+
     try:
         async with engine.begin() as conn:
-            # Drop table if exists to update schema
-            await conn.run_sync(Base.metadata.drop_all)
+            # await conn.run_sync(Base.metadata.drop_all)
             await conn.run_sync(Base.metadata.create_all)
         print("✅ Database tables created successfully")
-        
+
         # Insert dummy data
         async with AsyncSession(engine) as session:
-            # Check if data already exists
             result = await session.execute(select(TransactionDB))
             existing = result.scalars().all()
             if not existing:
@@ -60,13 +74,13 @@ async def startup():
                     )
                     session.add(tx)
                 await session.commit()
-                print("✅ Dummy data inserted successfully")
+                print(" Dummy data inserted successfully")
     except Exception as e:
         print(f"⚠️  Database connection failed: {e}")
         print("⏭️  Continuing without database")
 
 
-#  Health Check Endpoint
+# Health Check Endpoint
 @app.get("/")
 def home():
     return {
@@ -76,46 +90,20 @@ def home():
     }
 
 
-#  Get Stats Endpoint
-@app.get("/api/stats")
-async def get_stats(db: AsyncSession = Depends(get_db)):
-    """Get statistics about transactions"""
-    result = await db.execute(select(TransactionDB))
-    all_transactions = result.scalars().all()
-    
-    total_transactions = len(all_transactions)
-    flagged_count = sum(1 for tx in all_transactions if tx.is_fraud)
-    accuracy = 0.95  # Dummy accuracy
-    
-    return {
-        "total_transactions": total_transactions,
-        "flagged_count": flagged_count,
-        "accuracy": accuracy
-    }
-
-
-#  Get All Transactions Endpoint
-@app.get("/api/transactions", response_model=list[TransactionResponse])
-async def get_transactions(db: AsyncSession = Depends(get_db)):
-    """Get all transactions from database"""
-    result = await db.execute(select(TransactionDB))
-    transactions = result.scalars().all()
-    return transactions
-
-
-#  Analyze Transaction Endpoint
+# Analyze Transaction Endpoint
 @app.post("/api/analyze")
 async def analyze_transaction(data: dict):
     """Analyze a transaction for fraud"""
     amount = data.get("amount", 0)
     risk_score = 0.95 if amount > 50000 else 0.05
     flagged = risk_score > settings.FRAUD_THRESHOLD
-    
+
     return {
         "transaction_id": data.get("transaction_id"),
         "risk_score": risk_score,
         "flagged": flagged
     }
+
 
 def start():
     """Start the application"""
