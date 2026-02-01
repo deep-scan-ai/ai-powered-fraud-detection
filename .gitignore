@@ -89,3 +89,6 @@ ml/datasets/*.zip
 # ML models (regenerated files)
 *.pkl
 backend/app/ml/*.pkl
+
+# Local ML tests (need model files)
+backend/app/ml/local_tests/
