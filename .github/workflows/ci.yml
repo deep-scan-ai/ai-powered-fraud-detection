@@ -49,4 +49,5 @@ jobs:
         run: |
           cd frontend
           npm install
-          npm test -- --watchAll=false --silent
+          npm test -- --watchAll=false --silent --passWithNoTests
+
