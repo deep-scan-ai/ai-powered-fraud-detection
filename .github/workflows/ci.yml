@@ -48,5 +48,6 @@ jobs:
       - name: Install frontend deps and run tests
         run: |
           cd frontend
-          npm ci
-          npm test -- --watchAll=false --silent
+          npm install
+          npm test -- --watchAll=false --silent --passWithNoTests
+

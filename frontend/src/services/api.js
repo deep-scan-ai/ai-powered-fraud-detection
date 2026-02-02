@@ -1,6 +1,10 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+// Support both CRA-style and Vite-style env vars, and fall back to local dev default
+const API_BASE_URL =
+  process.env.REACT_APP_API_URL ||
+  process.env.VITE_API_URL ||
+  'http://localhost:8000';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -10,38 +14,20 @@ const api = axios.create({
   timeout: 10000, // 10 seconds timeout
 });
 
-
+// Use the FastAPI paths, which are all under /api/*
 export const analyzeTransaction = async (transactionData) => {
-  try {
-    const response = await api.post('/api/analyze', transactionData);
-    return response.data;
-  } catch (error) {
-    console.error('Error analyzing transaction:', error);
-    throw error;
-  }
+  const response = await api.post('/api/analyze', transactionData);
+  return response.data;
 };
-
 
 export const getTransactions = async () => {
-  try {
-    const response = await api.get('/api/transactions');
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching transactions:', error);
-    throw error;
-  }
+  const response = await api.get('/api/transactions');
+  return response.data;
 };
-
 
 export const getStats = async () => {
-  try {
-    const response = await api.get('/api/stats');
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching stats:', error);
-    throw error;
-  }
+  const response = await api.get('/api/stats');
+  return response.data;
 };
-
 
 export default api;

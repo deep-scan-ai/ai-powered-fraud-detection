@@ -1,5 +1,7 @@
+
 from .transaction import TransactionDB, Transaction, TransactionResponse, transactions_db
 from .user import UserDB, UserCreate, UserResponse
+from .fraud_alert import FraudAlertDB
 
 __all__ = [
     "TransactionDB",
@@ -9,4 +11,5 @@ __all__ = [
     "UserDB",
     "UserCreate",
     "UserResponse",
+    "FraudAlertDB",
 ]

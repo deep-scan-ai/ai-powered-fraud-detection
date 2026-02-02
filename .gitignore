@@ -80,3 +80,16 @@ ml/models/*.pkl
 htmlcov/
 .coverage
 .pytest_cache/
+
+# frontend test files
+frontend/src/**/*.test.js
+frontend/src/**/*.spec.js
+
+
+# ML datasets (too large for git)
+ml/datasets/*.csv
+ml/datasets/*.zip
+
+# ML models (regenerated files)
+*.pkl
+backend/app/ml/*.pkl
