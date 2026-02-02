@@ -1,19 +1,18 @@
 from sqlalchemy import Column, Integer, String, DateTime, Boolean
-from sqlalchemy.ext.declarative import declarative_base
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
-
-Base = declarative_base()
+from app.models.base import Base
 
 #  SQLAlchemy Model (Database) 
 class UserDB(Base):
     """Database model - represents users table in PostgreSQL"""
     __tablename__ = "users"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True)
     username = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
+    password_hash = Column(String)
+    role = Column(String, default="user")
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

@@ -28,6 +28,12 @@ docker-compose restart postgres
 docker-compose restart redis
 ```
 
+
+# ======== EVENING ========
+docker-compose down            # Stop containers
+# Database data stays safe ✅
+```
+
 ### Connect to Database
 ```bash
 # Open PowerShell in project root

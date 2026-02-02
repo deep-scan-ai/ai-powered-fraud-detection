@@ -85,3 +85,11 @@ htmlcov/
 frontend/src/**/*.test.js
 frontend/src/**/*.spec.js
 
+
+# ML datasets (too large for git)
+ml/datasets/*.csv
+ml/datasets/*.zip
+
+# ML models (regenerated files)
+*.pkl
+backend/app/ml/*.pkl
