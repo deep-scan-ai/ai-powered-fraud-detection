@@ -284,7 +284,7 @@ function Dashboard() {
   };
 
   const renderDashboard = () => (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
@@ -307,21 +307,21 @@ function Dashboard() {
             <input
               type="text"
               placeholder="Search transactions..."
-              className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-64"
+              className="pl-10 pr-4 py-2.5 glass-effect border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 w-64 text-sm"
             />
           </div>
-          <button className="p-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-            <Filter size={18} />
+          <button className="p-2.5 glass-effect border border-white/20 rounded-xl hover:bg-white/80 transition-all">
+            <Filter size={18} className="text-gray-700" />
           </button>
-          <button className="p-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-            <Calendar size={18} />
+          <button className="p-2.5 glass-effect border border-white/20 rounded-xl hover:bg-white/80 transition-all">
+            <Calendar size={18} className="text-gray-700" />
           </button>
         </div>
       </div>
 
       {/* Alert Banner */}
       {usingDummyData ? (
-        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg">
+        <div className="modern-card p-4 border-l-4 border-amber-400 bg-gradient-to-r from-amber-50 to-orange-50">
           <div className="flex items-center gap-3">
             <AlertTriangle
               className="text-yellow-600 flex-shrink-0"
@@ -336,10 +336,10 @@ function Dashboard() {
           </div>
         </div>
       ) : (
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 p-4 rounded-xl">
+        <div className="modern-card p-4 bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 border-l-4 border-indigo-500">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <Activity className="text-blue-600" size={20} />
+            <div className="p-2 gradient-primary rounded-lg shadow-md">
+              <Activity className="text-white" size={20} />
             </div>
             <div className="flex-1">
               <p className="font-medium text-gray-900">
@@ -364,68 +364,68 @@ function Dashboard() {
         {/* Left Column - Stats */}
         <div className="lg:col-span-2 space-y-6">
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex items-center justify-between mb-3">
-                <div className="p-2 bg-blue-50 rounded-lg">
-                  <CreditCard className="text-blue-600" size={20} />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="modern-card p-6 bg-indigo-50/40 border border-indigo-200/50 animate-fade-in-up">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 bg-indigo-500/10 rounded-xl border border-indigo-200">
+                  <CreditCard className="text-indigo-600" size={22} />
                 </div>
                 <span className="text-xs font-medium text-gray-500 px-2 py-1 bg-gray-100 rounded-full">
                   Today
                 </span>
               </div>
-              <p className="text-sm text-gray-600 mb-1">Total Transactions</p>
+              <p className="text-sm text-gray-600 mb-2 font-medium">Total Transactions</p>
               <div className="flex items-end justify-between">
                 <p className="text-2xl font-bold text-gray-900">
                   {statsLoading
                     ? "..."
                     : stats.total_transactions?.toLocaleString()}
                 </p>
-                <div className="flex items-center gap-1 text-green-600">
-                  <TrendingUp size={16} />
-                  <span className="text-sm font-medium">+12.5%</span>
+                <div className="flex items-center gap-1 px-2 py-1 bg-emerald-100/60 rounded-lg">
+                  <TrendingUp size={16} className="text-emerald-600" />
+                  <span className="text-sm font-bold text-emerald-700">+12.5%</span>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex items-center justify-between mb-3">
-                <div className="p-2 bg-red-50 rounded-lg">
-                  <AlertCircle className="text-red-600" size={20} />
+            <div className="modern-card p-6 bg-red-50/40 border border-red-200/50 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 bg-red-500/10 rounded-xl border border-red-200">
+                  <AlertCircle className="text-red-600" size={22} />
                 </div>
                 <span className="text-xs font-medium text-red-600 px-2 py-1 bg-red-50 rounded-full">
                   High Risk
                 </span>
               </div>
-              <p className="text-sm text-gray-600 mb-1">Flagged Fraud</p>
+              <p className="text-sm text-gray-600 mb-2 font-medium">Flagged Fraud</p>
               <div className="flex items-end justify-between">
                 <p className="text-2xl font-bold text-gray-900">
                   {statsLoading ? "..." : stats.flagged_count?.toLocaleString()}
                 </p>
-                <div className="flex items-center gap-1 text-red-600">
-                  <TrendingUp size={16} />
-                  <span className="text-sm font-medium">+3.2%</span>
+                <div className="flex items-center gap-1 px-2 py-1 bg-red-100/60 rounded-lg">
+                  <TrendingUp size={16} className="text-red-600" />
+                  <span className="text-sm font-bold text-red-700">+3.2%</span>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex items-center justify-between mb-3">
-                <div className="p-2 bg-green-50 rounded-lg">
-                  <Shield className="text-green-600" size={20} />
+            <div className="modern-card p-6 bg-emerald-50/40 border border-emerald-200/50 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 bg-emerald-500/10 rounded-xl border border-emerald-200">
+                  <Shield className="text-emerald-600" size={22} />
                 </div>
                 <span className="text-xs font-medium text-gray-500 px-2 py-1 bg-gray-100 rounded-full">
                   Model
                 </span>
               </div>
-              <p className="text-sm text-gray-600 mb-1">AI Accuracy</p>
+              <p className="text-sm text-gray-600 mb-2 font-medium">AI Accuracy</p>
               <div className="flex items-end justify-between">
                 <p className="text-2xl font-bold text-gray-900">
                   {statsLoading ? "..." : `${stats.accuracy}%`}
                 </p>
-                <div className="flex items-center gap-1 text-green-600">
-                  <TrendingUp size={16} />
-                  <span className="text-sm font-medium">+2.3%</span>
+                <div className="flex items-center gap-1 px-2 py-1 bg-emerald-100/60 rounded-lg">
+                  <TrendingUp size={16} className="text-emerald-600" />
+                  <span className="text-sm font-bold text-emerald-700">+2.3%</span>
                 </div>
               </div>
             </div>
@@ -465,7 +465,7 @@ function Dashboard() {
             <div className="relative z-10">
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-2 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg shadow-md">
-                  <Sparkles size={24} className="text-white" />
+
                 </div>
                 <div>
                   <h3 className="font-bold text-lg text-gray-900">
@@ -772,7 +772,135 @@ function Dashboard() {
           Detailed insights and patterns
         </p>
       </div>
+
+      {/* Charts */}
       <TransactionChart transactions={transactions} stats={stats} />
+
+      {/* Detailed Metrics Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="modern-card p-5 bg-blue-50/40 border border-blue-200/50">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="p-2 bg-blue-500/10 rounded-lg border border-blue-200">
+              <TrendingUp className="text-blue-600" size={20} />
+            </div>
+            <h3 className="font-semibold text-gray-900">Detection Rate</h3>
+          </div>
+          <p className="text-2xl font-bold text-gray-900 mb-1">94.2%</p>
+          <p className="text-xs text-gray-600">Fraud successfully identified</p>
+        </div>
+
+        <div className="modern-card p-5 bg-purple-50/40 border border-purple-200/50">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="p-2 bg-purple-500/10 rounded-lg border border-purple-200">
+              <Clock className="text-purple-600" size={20} />
+            </div>
+            <h3 className="font-semibold text-gray-900">Avg Response</h3>
+          </div>
+          <p className="text-2xl font-bold text-gray-900 mb-1">0.8s</p>
+          <p className="text-xs text-gray-600">Processing time per transaction</p>
+        </div>
+
+        <div className="modern-card p-5 bg-amber-50/40 border border-amber-200/50">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="p-2 bg-amber-500/10 rounded-lg border border-amber-200">
+              <AlertTriangle className="text-amber-600" size={20} />
+            </div>
+            <h3 className="font-semibold text-gray-900">False Positives</h3>
+          </div>
+          <p className="text-2xl font-bold text-gray-900 mb-1">5.8%</p>
+          <p className="text-xs text-gray-600">Incorrectly flagged as fraud</p>
+        </div>
+
+        <div className="modern-card p-5 bg-emerald-50/40 border border-emerald-200/50">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="p-2 bg-emerald-500/10 rounded-lg border border-emerald-200">
+              <Users className="text-emerald-600" size={20} />
+            </div>
+            <h3 className="font-semibold text-gray-900">Active Users</h3>
+          </div>
+          <p className="text-2xl font-bold text-gray-900 mb-1">2,431</p>
+          <p className="text-xs text-gray-600">Currently being monitored</p>
+        </div>
+      </div>
+
+      {/* Insights Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="modern-card p-6">
+          <h3 className="text-lg font-bold text-gray-900 mb-4">Top Fraud Patterns</h3>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between p-3 bg-red-50/40 rounded-lg border border-red-100">
+              <div>
+                <p className="font-semibold text-gray-900">Unusual Location</p>
+                <p className="text-xs text-gray-600">Transactions from unexpected regions</p>
+              </div>
+              <span className="text-lg font-bold text-red-600">42%</span>
+            </div>
+            <div className="flex items-center justify-between p-3 bg-orange-50/40 rounded-lg border border-orange-100">
+              <div>
+                <p className="font-semibold text-gray-900">High Amount</p>
+                <p className="text-xs text-gray-600">Unusually large transaction values</p>
+              </div>
+              <span className="text-lg font-bold text-orange-600">28%</span>
+            </div>
+            <div className="flex items-center justify-between p-3 bg-amber-50/40 rounded-lg border border-amber-100">
+              <div>
+                <p className="font-semibold text-gray-900">Rapid Succession</p>
+                <p className="text-xs text-gray-600">Multiple transactions in short time</p>
+              </div>
+              <span className="text-lg font-bold text-amber-600">18%</span>
+            </div>
+            <div className="flex items-center justify-between p-3 bg-yellow-50/40 rounded-lg border border-yellow-100">
+              <div>
+                <p className="font-semibold text-gray-900">New Device</p>
+                <p className="text-xs text-gray-600">Unrecognized device access</p>
+              </div>
+              <span className="text-lg font-bold text-yellow-600">12%</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="modern-card p-6">
+          <h3 className="text-lg font-bold text-gray-900 mb-4">Model Performance</h3>
+          <div className="space-y-4">
+            <div>
+              <div className="flex justify-between mb-2">
+                <span className="text-sm font-medium text-gray-700">Precision</span>
+                <span className="text-sm font-bold text-gray-900">92.4%</span>
+              </div>
+              <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div className="h-full bg-gradient-to-r from-indigo-500 to-purple-500" style={{ width: '92.4%' }}></div>
+              </div>
+            </div>
+            <div>
+              <div className="flex justify-between mb-2">
+                <span className="text-sm font-medium text-gray-700">Recall</span>
+                <span className="text-sm font-bold text-gray-900">89.7%</span>
+              </div>
+              <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div className="h-full bg-gradient-to-r from-blue-500 to-cyan-500" style={{ width: '89.7%' }}></div>
+              </div>
+            </div>
+            <div>
+              <div className="flex justify-between mb-2">
+                <span className="text-sm font-medium text-gray-700">F1 Score</span>
+                <span className="text-sm font-bold text-gray-900">91.0%</span>
+              </div>
+              <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-500" style={{ width: '91.0%' }}></div>
+              </div>
+            </div>
+            <div>
+              <div className="flex justify-between mb-2">
+                <span className="text-sm font-medium text-gray-700">AUC-ROC</span>
+                <span className="text-sm font-bold text-gray-900">95.3%</span>
+              </div>
+              <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div className="h-full bg-gradient-to-r from-violet-500 to-purple-500" style={{ width: '95.3%' }}></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 
@@ -784,14 +912,128 @@ function Dashboard() {
           Configure detection parameters
         </p>
       </div>
-      <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-        <p className="text-gray-500">Settings panel will be available soon.</p>
+
+      {/* Detection Thresholds */}
+      <div className="modern-card p-6">
+        <h3 className="text-lg font-bold text-gray-900 mb-4">Detection Thresholds</h3>
+        <div className="space-y-5">
+          <div>
+            <div className="flex justify-between mb-2">
+              <label className="text-sm font-medium text-gray-700">Fraud Confidence Threshold</label>
+              <span className="text-sm font-bold text-indigo-600">75%</span>
+            </div>
+            <input type="range" min="50" max="99" value="75" className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" />
+            <p className="text-xs text-gray-500 mt-1">Minimum confidence level to flag a transaction as fraudulent</p>
+          </div>
+
+          <div>
+            <div className="flex justify-between mb-2">
+              <label className="text-sm font-medium text-gray-700">Amount Alert Threshold</label>
+              <span className="text-sm font-bold text-indigo-600">LKR 5,000</span>
+            </div>
+            <input type="range" min="1000" max="10000" value="5000" step="500" className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" />
+            <p className="text-xs text-gray-500 mt-1">Trigger additional checks for transactions above this amount</p>
+          </div>
+
+          <div>
+            <div className="flex justify-between mb-2">
+              <label className="text-sm font-medium text-gray-700">Velocity Check Window</label>
+              <span className="text-sm font-bold text-indigo-600">5 min</span>
+            </div>
+            <input type="range" min="1" max="30" value="5" className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" />
+            <p className="text-xs text-gray-500 mt-1">Time window for detecting rapid transaction patterns</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Notification Settings */}
+      <div className="modern-card p-6">
+        <h3 className="text-lg font-bold text-gray-900 mb-4">Notification Preferences</h3>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between p-4 bg-gray-50/50 rounded-lg border border-gray-200">
+            <div>
+              <p className="font-semibold text-gray-900">Email Alerts</p>
+              <p className="text-xs text-gray-600">Receive notifications for high-risk transactions</p>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" className="sr-only peer" defaultChecked />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+            </label>
+          </div>
+
+          <div className="flex items-center justify-between p-4 bg-gray-50/50 rounded-lg border border-gray-200">
+            <div>
+              <p className="font-semibold text-gray-900">SMS Notifications</p>
+              <p className="text-xs text-gray-600">Text alerts for critical fraud events</p>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" className="sr-only peer" />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+            </label>
+          </div>
+
+          <div className="flex items-center justify-between p-4 bg-gray-50/50 rounded-lg border border-gray-200">
+            <div>
+              <p className="font-semibold text-gray-900">Dashboard Notifications</p>
+              <p className="text-xs text-gray-600">In-app alerts and updates</p>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" className="sr-only peer" defaultChecked />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      {/* Model Configuration */}
+      <div className="modern-card p-6">
+        <h3 className="text-lg font-bold text-gray-900 mb-4">AI Model Configuration</h3>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Model Version</label>
+            <select className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white">
+              <option>v2.5.1 (Current - Recommended)</option>
+              <option>v2.4.3 (Stable)</option>
+              <option>v2.6.0-beta (Experimental)</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Training Data Refresh</label>
+            <select className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white">
+              <option>Daily</option>
+              <option>Weekly</option>
+              <option>Monthly</option>
+            </select>
+          </div>
+
+          <div className="flex items-center justify-between p-4 bg-indigo-50/40 rounded-lg border border-indigo-200">
+            <div>
+              <p className="font-semibold text-gray-900">Auto-Learning</p>
+              <p className="text-xs text-gray-600">Continuously improve model with new data</p>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" className="sr-only peer" defaultChecked />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      {/* Save Button */}
+      <div className="flex justify-end gap-3">
+        <button className="px-6 py-2.5 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+          Reset to Defaults
+        </button>
+        <button className="px-6 py-2.5 gradient-primary text-white rounded-lg font-medium shadow-md hover:shadow-lg transition-all">
+          Save Changes
+        </button>
       </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
       <MobileNav activeTab={activeTab} setActiveTab={setActiveTab} />
       <div className="lg:ml-64 p-6 pt-20 lg:pt-6">
