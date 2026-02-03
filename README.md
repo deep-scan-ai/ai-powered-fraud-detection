@@ -66,9 +66,16 @@ Location: x:\Git Project\ai-powered-fraud-detection\frontend\.env
 ```
 
 ### Step 3: Start All Services
+
+**Run from the project root** (where `docker-compose.yml` is). Ensure Docker Desktop is running.
+
 ```bash
 docker-compose up -d --build
 ```
+
+Or use the modern form: `docker compose up -d --build`
+
+**On Windows PowerShell:** If you chain commands, use `;` instead of `&&` (e.g. `cd "e:\Git projects\ai-powered-fraud-detection"; docker-compose up -d --build`). Or run each command separately.
 
 **Wait 2-3 minutes for everything to start...**
 
@@ -97,6 +104,12 @@ http://localhost:8000/docs
 ```
 http://localhost:3000
 ```
+
+#### If `docker-compose` doesn't run or times out
+- **Run from project root:** Open terminal in `ai-powered-fraud-detection` (the folder that contains `docker-compose.yml`).
+- **Docker Desktop:** Start Docker Desktop and wait until it's fully running before running `docker-compose` or `docker compose`.
+- **Alternative command:** Use `docker compose` (with a space) instead of `docker-compose` if your install uses the Compose V2 plugin.
+
 ---
 
 ### Step 6: Test the API
