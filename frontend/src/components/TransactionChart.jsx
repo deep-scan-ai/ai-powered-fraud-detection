@@ -42,12 +42,18 @@ function TransactionChart({ transactions, stats }) {
       {
         label: 'Transactions',
         data: transactionsByDay,
-        borderColor: 'rgb(59, 130, 246)',
-        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        borderColor: 'rgb(99, 102, 241)',
+        backgroundColor: 'rgba(99, 102, 241, 0.1)',
         tension: 0.4,
         fill: true,
-        pointRadius: 4,
-        pointHoverRadius: 6,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        pointBackgroundColor: 'rgb(99, 102, 241)',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointHoverBackgroundColor: 'rgb(79, 70, 229)',
+        pointHoverBorderColor: '#fff',
+        borderWidth: 3,
       },
     ],
   };
@@ -60,24 +66,41 @@ function TransactionChart({ transactions, stats }) {
         display: false,
       },
       tooltip: {
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-        padding: 12,
-        titleFont: { size: 14, weight: 'bold' },
-        bodyFont: { size: 13 },
+        backgroundColor: 'rgba(17, 24, 39, 0.95)',
+        padding: 16,
+        titleFont: { size: 14, weight: 'bold', family: 'Inter' },
+        bodyFont: { size: 13, family: 'Inter' },
+        borderColor: 'rgba(99, 102, 241, 0.3)',
+        borderWidth: 1,
+        cornerRadius: 8,
+        displayColors: false,
       },
     },
     scales: {
       y: {
         beginAtZero: true,
         grid: {
-          color: 'rgba(0, 0, 0, 0.05)',
+          color: 'rgba(99, 102, 241, 0.08)',
+          drawBorder: false,
         },
         ticks: {
           stepSize: 10,
+          font: { family: 'Inter', size: 11 },
+          color: '#6b7280',
+        },
+        border: {
+          display: false,
         },
       },
       x: {
         grid: {
+          display: false,
+        },
+        ticks: {
+          font: { family: 'Inter', size: 11, weight: '500' },
+          color: '#374151',
+        },
+        border: {
           display: false,
         },
       },
@@ -89,19 +112,20 @@ function TransactionChart({ transactions, stats }) {
   const safeCount = (stats?.total_transactions || 0) - fraudCount;
 
   const doughnutData = {
-    labels: ['Safe', 'Fraud'],
+    labels: ['Safe Transactions', 'Fraud Detected'],
     datasets: [
       {
         data: [safeCount, fraudCount],
         backgroundColor: [
-          'rgba(34, 197, 94, 0.8)',
-          'rgba(239, 68, 68, 0.8)',
+          'rgba(16, 185, 129, 0.9)',
+          'rgba(239, 68, 68, 0.9)',
         ],
         borderColor: [
-          'rgb(34, 197, 94)',
+          'rgb(16, 185, 129)',
           'rgb(239, 68, 68)',
         ],
-        borderWidth: 2,
+        borderWidth: 3,
+        hoverOffset: 8,
       },
     ],
   };
@@ -113,31 +137,56 @@ function TransactionChart({ transactions, stats }) {
       legend: {
         position: 'bottom',
         labels: {
-          padding: 15,
+          padding: 20,
           font: {
-            size: 12,
-            weight: '500',
+            size: 13,
+            weight: '600',
+            family: 'Inter',
           },
+          color: '#374151',
+          usePointStyle: true,
+          pointStyle: 'circle',
         },
       },
       tooltip: {
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-        padding: 12,
+        backgroundColor: 'rgba(17, 24, 39, 0.95)',
+        padding: 16,
+        titleFont: { size: 14, weight: 'bold', family: 'Inter' },
+        bodyFont: { size: 13, family: 'Inter' },
+        borderColor: 'rgba(99, 102, 241, 0.3)',
+        borderWidth: 1,
+        cornerRadius: 8,
+        callbacks: {
+          label: function (context) {
+            const label = context.label || '';
+            const value = context.parsed || 0;
+            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+            const percentage = ((value / total) * 100).toFixed(1);
+            return `${label}: ${value} (${percentage}%)`;
+          }
+        }
       },
     },
+    cutout: '65%',
   };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <div className="bg-white rounded-xl shadow-lg p-6">
-        <h3 className="text-lg font-bold text-gray-900 mb-4">Transaction Trends</h3>
+      <div className="modern-card p-6 animate-scale-in">
+        <div className="flex items-center gap-2 mb-6">
+          <div className="w-1 h-6 gradient-primary rounded-full"></div>
+          <h3 className="text-lg font-bold text-gray-900">Transaction Trends</h3>
+        </div>
         <div className="h-64">
           <Line data={lineData} options={lineOptions} />
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-lg p-6">
-        <h3 className="text-lg font-bold text-gray-900 mb-4">Fraud Distribution</h3>
+      <div className="modern-card p-6 animate-scale-in" style={{ animationDelay: '100ms' }}>
+        <div className="flex items-center gap-2 mb-6">
+          <div className="w-1 h-6 gradient-danger rounded-full"></div>
+          <h3 className="text-lg font-bold text-gray-900">Fraud Distribution</h3>
+        </div>
         <div className="h-64">
           <Doughnut data={doughnutData} options={doughnutOptions} />
         </div>
