@@ -93,3 +93,6 @@ ml/datasets/*.zip
 # ML models (regenerated files)
 *.pkl
 backend/app/ml/*.pkl
+
+# Firebase 
+serviceAccountKey.json
