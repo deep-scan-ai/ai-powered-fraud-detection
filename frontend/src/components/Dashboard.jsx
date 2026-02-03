@@ -14,6 +14,7 @@ import {
   Users,
   AlertCircle,
   MoreVertical,
+  Filter,
   Calendar,
   CreditCard,
   Globe,
@@ -555,11 +556,10 @@ function Dashboard() {
                           key={device}
                           type="button"
                           onClick={() => setFormData({ ...formData, device })}
-                          className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
-                            formData.device === device
-                              ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md"
-                              : "bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100"
-                          }`}
+                          className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${formData.device === device
+                            ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md"
+                            : "bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100"
+                            }`}
                         >
                           {device.charAt(0).toUpperCase() + device.slice(1)}
                         </button>
@@ -592,13 +592,12 @@ function Dashboard() {
           {/* Result Display */}
           {result && (
             <div
-              className={`p-5 rounded-2xl border ${
-                result.error
-                  ? "bg-red-50 border-red-200"
-                  : result.is_fraud
-                    ? "bg-red-50 border-red-300"
-                    : "bg-green-50 border-green-300"
-              }`}
+              className={`p-5 rounded-2xl border ${result.error
+                ? "bg-red-50 border-red-200"
+                : result.is_fraud
+                  ? "bg-red-50 border-red-300"
+                  : "bg-green-50 border-green-300"
+                }`}
             >
               {result.error ? (
                 <div className="flex items-center gap-3">

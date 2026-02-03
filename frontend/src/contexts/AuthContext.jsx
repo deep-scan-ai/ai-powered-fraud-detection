@@ -1,6 +1,6 @@
 // Auth context provider for managing auth state globally
 import React, { createContext, useState, useContext, useEffect } from "react";
-import { onAuthStateChange, getCurrentUserInfo } from "../services/firebase";
+import { onAuthStateChange, getCurrentUserInfo, signOutUser } from "../services/firebase";
 
 const AuthContext = createContext();
 
@@ -39,11 +39,24 @@ export const AuthProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
+  const logout = async () => {
+    try {
+      setError(null);
+      await signOutUser();
+      setUser(null);
+      setUserInfo(null);
+    } catch (err) {
+      setError(err?.message || "Logout failed");
+      throw err;
+    }
+  };
+
   const value = {
     user,
     userInfo,
     loading,
     error,
+    logout,
     isAuthenticated: !!user,
     isAdmin: userInfo?.role === "admin",
     isAnalyst: userInfo?.role === "analyst",

@@ -28,11 +28,12 @@ docker-compose restart postgres
 docker-compose restart redis
 ```
 
-
-# ======== EVENING ========
-docker-compose down            # Stop containers
-# Database data stays safe ✅
+#### Stop All Containers (e.g. end of day)
+```bash
+docker-compose down            # Stop containers; database data stays safe
 ```
+
+**Note:** Run the above from the **project root** (where `docker-compose.yml` is), not from `frontend/`.
 
 ### Connect to Database
 ```bash

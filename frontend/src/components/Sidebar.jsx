@@ -1,6 +1,25 @@
-import { LayoutDashboard, Shield, Activity, Settings, BarChart3, Zap } from 'lucide-react';
+import { LayoutDashboard, Shield, Activity, Settings, BarChart3, Zap, LogOut } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { useState } from 'react';
 
 function Sidebar({ activeTab, setActiveTab }) {
+  const navigate = useNavigate();
+  const { userInfo, user, logout } = useAuth();
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    if (loggingOut) return;
+    setLoggingOut(true);
+    try {
+      await logout();
+      navigate('/login', { replace: true });
+    } catch (err) {
+      console.error('Logout failed:', err);
+    } finally {
+      setLoggingOut(false);
+    }
+  };
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, color: 'from-indigo-500 to-purple-600' },
     { id: 'transactions', label: 'Transactions', icon: Activity, color: 'from-blue-500 to-cyan-600' },
@@ -69,17 +88,28 @@ function Sidebar({ activeTab, setActiveTab }) {
         </div>
       </div>
 
-      {/* User Profile */}
-      <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10">
-        <div className="flex items-center gap-3 p-3 bg-white/60 rounded-xl hover:bg-white/80 transition-all cursor-pointer group">
-          <div className="w-10 h-10 gradient-primary rounded-full flex items-center justify-center shadow-md">
-            <span className="text-sm font-bold text-white">AD</span>
+      {/* User Profile & Logout */}
+      <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10 space-y-2">
+        <div className="flex items-center gap-3 p-3 bg-white/60 rounded-xl">
+          <div className="w-10 h-10 gradient-primary rounded-full flex items-center justify-center shadow-md flex-shrink-0">
+            <span className="text-sm font-bold text-white">
+              {userInfo?.display_name?.slice(0, 2)?.toUpperCase() || user?.email?.slice(0, 2)?.toUpperCase() || 'U'}
+            </span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-gray-900 truncate">Admin User</p>
-            <p className="text-xs text-gray-600 truncate">admin@fraudguard.com</p>
+            <p className="text-sm font-semibold text-gray-900 truncate">{userInfo?.display_name || 'User'}</p>
+            <p className="text-xs text-gray-600 truncate">{user?.email || ''}</p>
           </div>
         </div>
+        <button
+          type="button"
+          onClick={handleLogout}
+          disabled={loggingOut}
+          className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium text-sm text-red-600 hover:bg-red-50 hover:text-red-700 border border-red-200/60 hover:border-red-300 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          <LogOut size={18} />
+          {loggingOut ? 'Signing out...' : 'Sign out'}
+        </button>
       </div>
     </div>
   );
