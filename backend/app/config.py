@@ -27,10 +27,14 @@ class Settings(BaseSettings):
     
     # CORS
     ALLOWED_ORIGINS: list[str] = ["*"]
+
+    # Firebase
+    FIREBASE_CREDENTIALS_PATH: str
     
     class Config:
         env_file = ".env"
         case_sensitive = True
+        
 
 @lru_cache()
 def get_settings() -> Settings:
