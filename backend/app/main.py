@@ -11,6 +11,8 @@ from app.models.transaction import Base
 
 from app.api.fraud_alert import router as fraud_alert_router
 from app.api.transactions import router as transactions_router
+from app.api.auth import router as auth_router
+from app.api.admin import router as admin_router
 
 
 # Create FastAPI app
@@ -18,6 +20,19 @@ app = FastAPI(
     title=settings.APP_NAME,
     version=settings.VERSION,
     debug=settings.DEBUG
+)
+
+# Include routers
+app.include_router(
+    auth_router,
+    prefix="/api",
+    tags=["Authentication"]
+)
+
+app.include_router(
+    admin_router,
+    prefix="/api",
+    tags=["Admin"]
 )
 
 app.include_router(
