@@ -20,6 +20,11 @@ export const analyzeTransaction = async (transactionData) => {
   return response.data;
 };
 
+export const getTransactionById = async (transactionId) => {
+  const response = await api.get(`/api/transactions/${transactionId}`);
+  return response.data;
+};
+
 export const getTransactions = async () => {
   const response = await api.get('/api/transactions');
   return response.data;

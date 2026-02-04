@@ -19,7 +19,7 @@ import {
   CreditCard,
   Globe,
 } from "lucide-react";
-import { analyzeTransaction, getStats, getTransactions } from "../services/api";
+import { analyzeTransaction, getStats, getTransactions, getTransactionById } from "../services/api";
 import Sidebar from "./Sidebar";
 import MobileNav from "./MobileNav";
 import StatsCard from "./StatsCard";
@@ -260,15 +260,41 @@ function Dashboard() {
           accuracy: DUMMY_STATS.accuracy,
         });
       } else {
-        const data = await analyzeTransaction({
-          ...formData,
-          amount: parseFloat(formData.amount),
-        });
-        setResult(data);
-        setTimeout(() => {
-          fetchTransactions();
-          fetchStats();
-        }, 1000);
+        // Try to fetch existing transaction first
+        try {
+          const existingTransaction = await getTransactionById(formData.transaction_id);
+          if (existingTransaction) {
+            setResult({
+              transaction_id: existingTransaction.transaction_id,
+              is_fraud: existingTransaction.is_fraud,
+              risk_score: existingTransaction.risk_score,
+              confidence: 0.95, // Hardcoded for simplified view
+              reason: existingTransaction.is_fraud
+                ? `Transaction ${existingTransaction.transaction_id} was flagged as FRAUD.`
+                : `Transaction ${existingTransaction.transaction_id} is verified as SAFE.`,
+            });
+            // Also populate form with fetched data
+            setFormData({
+              transaction_id: existingTransaction.transaction_id,
+              user_id: existingTransaction.user_id,
+              amount: existingTransaction.amount,
+              location: existingTransaction.location,
+              device: existingTransaction.device,
+            });
+          }
+        } catch (fetchError) {
+          // If 404 or verify failed, proceed to analyze as new (existing logic)
+          console.log("Transaction not found, analyzing as new...");
+          const data = await analyzeTransaction({
+            ...formData,
+            amount: parseFloat(formData.amount),
+          });
+          setResult(data);
+          setTimeout(() => {
+            fetchTransactions();
+            fetchStats();
+          }, 1000);
+        }
       }
     } catch (error) {
       setResult({ error: "Failed to analyze transaction" });
