@@ -1,6 +1,6 @@
 import asyncio
-from datetime import datetime, timedelta, UTC
-import bcrypt
+from datetime import datetime, timedelta
+# bcrypt removed
 from sqlalchemy import select, delete, text
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import async_session
@@ -32,7 +32,7 @@ async def seed_users(session: AsyncSession):
         UserDB(
             email="alice@example.com",
             username="alice",
-            password_hash=bcrypt.hashpw("password123".encode("utf-8"), bcrypt.gensalt()).decode("utf-8"),
+            firebase_uid="uid_alice_123",
             role="user",
             is_active=True,
             created_at=now,
@@ -41,7 +41,7 @@ async def seed_users(session: AsyncSession):
         UserDB(
             email="bob@example.com",
             username="bob",
-            password_hash=bcrypt.hashpw("securepass".encode("utf-8"), bcrypt.gensalt()).decode("utf-8"),
+            firebase_uid="uid_bob_456",
             role="user",
             is_active=True,
             created_at=now,
@@ -50,7 +50,7 @@ async def seed_users(session: AsyncSession):
         UserDB(
             email="admin@example.com",
             username="admin",
-            password_hash=bcrypt.hashpw("adminpass".encode("utf-8"), bcrypt.gensalt()).decode("utf-8"),
+            firebase_uid="uid_admin_789",
             role="admin",
             is_active=True,
             created_at=now,
@@ -76,7 +76,60 @@ async def seed_transactions(session: AsyncSession, users):
     # Get current time without timezone info (naive datetime)
     now = datetime.now()
     
-    transactions = []
+    transactions = [
+        # SAFE Transaction
+        TransactionDB(
+            transaction_id="TXN-001",
+            user_id="U100",
+            amount=500.00,
+            location="Colombo",
+            device="mobile",
+            timestamp=now - timedelta(hours=2),
+            is_fraud=False,
+            risk_score=0.1,
+            created_at=now,
+            updated_at=now
+        ),
+        # FRAUD Transaction
+        TransactionDB(
+            transaction_id="TXN-002",
+            user_id="U101",
+            amount=75000.00,
+            location="Unknown",
+            device="desktop",
+            timestamp=now - timedelta(hours=5),
+            is_fraud=True,
+            risk_score=0.95,
+            created_at=now,
+            updated_at=now
+        ),
+        TransactionDB(
+            transaction_id="TXN-003",
+            user_id="U110",
+            amount=80.00,
+            location="Colombo",
+            device="mobile",
+            timestamp=now - timedelta(hours=3),
+            is_fraud=False,
+            risk_score=0.9,
+            created_at=now,
+            updated_at=now
+        ),
+        TransactionDB(
+            transaction_id="TXN-004",
+            user_id="U111",
+            amount=90.00,
+            location="Colombo",
+            device="mobile",
+            timestamp=now - timedelta(hours=2),
+            is_fraud=True,
+            risk_score=0.2,
+            created_at=now,
+            updated_at=now
+        ),
+    ]
+
+    # Generate random ones
     for i in range(1, 6):
         user = users[i % len(users)]
         transactions.append(
@@ -139,6 +192,12 @@ async def main():
         print("="*50 + "\n")
         
         async with async_session() as session:
+            # Ensure tables exist (development convenience)
+            from app.database import engine
+            from app.models.base import Base
+            async with engine.begin() as conn:
+                await conn.run_sync(Base.metadata.create_all)
+
             # Clear existing data first
             await clear_database(session)
             
